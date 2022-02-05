@@ -8,14 +8,13 @@ class Service(models.Model):
     adultPrice = models.PositiveIntegerField(default=0, blank=True, null=True)
     childPrice = models.PositiveIntegerField(default=0, blank=True, null=True)
     start_time = models.TimeField(null=True, blank=True)
-    end_time = models.TimeField(null=True, blank=True)
-    time_durations = None
-    
+    end_time = models.TimeField(null=True, blank=True)    
+
     @property
-    def time_durations(self):
-        choices = (f'{x} - {x+2}' for x in range(self.start_time.hour, self.end_time.hour, 2))
-        choices = tuple([(x, x) for x in choices])
-        time_durations = models.CharField(max_length=100, choices=choices)    
+    def time_durations(self) -> tuple: #time choices in a tuple for creating in forms
+        step = int(self.duration.total_seconds()/3600)
+        time_durations = (f'{x} - {x+step}' for x in range(self.start_time.hour, self.end_time.hour, step))
+        time_durations = tuple([(x, x) for x in time_durations])
         return time_durations
     
     def __str__(self):
