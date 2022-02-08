@@ -9,12 +9,12 @@ class Service(models.Model):
     childPrice = models.PositiveIntegerField(default=0, blank=True, null=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)    
+    capacity = models.IntegerField(null = True, blank = True)
 
     @property
-    def time_durations(self) -> tuple: #time choices in a tuple for creating in forms
+    def time_durations(self) -> list: #time choices in a tuple for creating in forms
         step = int(self.duration.total_seconds()/3600)
-        time_durations = (f'{x} - {x+step}' for x in range(self.start_time.hour, self.end_time.hour, step))
-        time_durations = tuple([(x, x) for x in time_durations])
+        time_durations = [f'{x} - {x+step}' for x in range(self.start_time.hour, self.end_time.hour, step)]
         return time_durations
     
     def __str__(self):
@@ -41,8 +41,8 @@ class Agent(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.CharField(max_length = 200)
-    name = models.CharField(max_length = 200)
+    email = models.CharField(max_length = 200, blank=True, null=True)
+    name = models.CharField(max_length = 200, blank=True, null = True)
 
     def __str__(self):
         return f'{self.name}'
@@ -63,7 +63,7 @@ class Booking(models.Model):
         return final_price
     
     def __str__(self):
-        return f'#{self.id} - {self.service} - {self.final_price}'
+        return f'#{self.id} - {self.service} - {self.final_price}$'
 
 
 class Days(models.Model):
